@@ -29,19 +29,22 @@
     <h1>WhatsApp qrupuna qoşul</h1>
     <p>Aşağıdakı düymələrdən birini seç.</p>
 
+    <!-- iOS -->
     <div id="iosPanel" class="hidden">
       <div class="row">
         <a id="btnIOS_WAB" class="btn btn-primary"  href="#">WhatsApp <b>Business</b> ilə aç</a>
         <a id="btnIOS_WA"  class="btn btn-outline" href="#">Adi WhatsApp ilə aç</a>
       </div>
-      <p class="hint">TikTok/Instagram içində açılsa da işləyəcək.</p>
+      <p class="hint">TikTok/Instagram içindən açılsa da işləyəcək.</p>
     </div>
 
+    <!-- Android -->
     <div id="androidPanel" class="hidden">
       <a id="btnAND" class="btn btn-primary" href="#">Qrupa qoşul (Android)</a>
-      <p class="hint">Chooser çıxacaq — Adi/Business seç.</p>
+      <p class="hint">Adi və ya Business – telefonda hansı varsa, o açılacaq.</p>
     </div>
 
+    <!-- Digər platformalar -->
     <div id="otherPanel" class="hidden">
       <a id="btnOTHER" class="btn btn-primary" href="#">Qrupa qoşul</a>
     </div>
@@ -49,59 +52,53 @@
 </div>
 
 <script>
-  /* ==== TOPLULUQ + QRUP ==== */
-  const TOPLULUK = "https://chat.whatsapp.com/GbbXxshpZM27imtEcy0Eos";
-  const CODE     = "I2FH6EL06EdHt05Anj92Ne";       // qrup kodu
-  const CHAT     = `https://chat.whatsapp.com/${CODE}`;
-  const DL_WA    = `whatsapp://accept?code=${CODE}`;
-  const DL_WAB   = `whatsapp-business://accept?code=${CODE}`;
+  /* ==== QRUP LINKI – BURANI ÖZÜN DƏYİŞİRSƏN ==== */
+  const CHAT = "https://chat.whatsapp.com/I2FH6EL06EdHt05Anj92Ne";
 
-  const UA       = navigator.userAgent;
+  /* ==== Detektorlar ==== */
+  const UA = navigator.userAgent || navigator.vendor || window.opera;
   const isAndroid = /Android/i.test(UA);
   const isIOS     = /iPhone|iPad|iPod/i.test(UA);
 
-  function openNew(u){
-    try { window.open(u, "_blank"); }
-    catch(_) { location.href = u; }
+  function goToChat(){
+    // Heç bir deep-link yox, birbaşa universal link
+    window.location.href = CHAT;
   }
 
-  /* ==== İOS ==== */
   function setupIOS(){
     document.getElementById("iosPanel").classList.remove("hidden");
 
-    function go(deep){
-      openNew(TOPLULUK);          // topluluğun meta görünüşü açılsın
-      setTimeout(()=> location.href = deep, 700);
-      setTimeout(()=> location.href = CHAT, 1500);
-    }
+    document.getElementById("btnIOS_WAB").addEventListener("click", function(e){
+      e.preventDefault();
+      goToChat();
+    });
 
-    document.getElementById("btnIOS_WAB").onclick = e => { e.preventDefault(); go(DL_WAB); };
-    document.getElementById("btnIOS_WA").onclick  = e => { e.preventDefault(); go(DL_WA); };
+    document.getElementById("btnIOS_WA").addEventListener("click", function(e){
+      e.preventDefault();
+      goToChat();
+    });
   }
 
-  /* ==== ANDROID ==== */
   function setupAndroid(){
     document.getElementById("androidPanel").classList.remove("hidden");
-    document.getElementById("btnAND").onclick = e => {
+    document.getElementById("btnAND").addEventListener("click", function(e){
       e.preventDefault();
-      openNew(TOPLULUK);
-      setTimeout(()=> location.href = `intent://chat.whatsapp.com/${CODE}#Intent;scheme=https;end`, 600);
-    };
+      goToChat();
+    });
   }
 
-  /* ==== OTHER ==== */
   function setupOther(){
     document.getElementById("otherPanel").classList.remove("hidden");
-    document.getElementById("btnOTHER").onclick = e => {
+    document.getElementById("btnOTHER").addEventListener("click", function(e){
       e.preventDefault();
-      location.href = CHAT;
-    };
+      goToChat();
+    });
   }
 
   (function init(){
-    if (isIOS) setupIOS();
+    if (isIOS)         setupIOS();
     else if (isAndroid) setupAndroid();
-    else setupOther();
+    else               setupOther();
   })();
 </script>
 </body>
