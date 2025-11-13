@@ -29,22 +29,22 @@
     <h1>WhatsApp qrupuna qoşul</h1>
     <p>Aşağıdakı düymələrdən birini seç.</p>
 
-    <!-- iOS: yalnız iki seçim -->
+    <!-- iOS paneli -->
     <div id="iosPanel" class="hidden">
       <div class="row">
         <a id="btnIOS_WAB" class="btn btn-primary"  href="#">WhatsApp <b>Business</b> ilə aç</a>
         <a id="btnIOS_WA"  class="btn btn-outline" href="#">Adi WhatsApp ilə aç</a>
       </div>
-      <p class="hint">Qeyd: TikTok/Instagram içindən açılsa da işləyəcək. Alınmasa linki yenidən açıb düyməni basın.</p>
+      <p class="hint">Qeyd: TikTok/Instagram içindən açılsa belə işləyir.</p>
     </div>
 
     <!-- Android -->
     <div id="androidPanel" class="hidden">
       <a id="btnAND" class="btn btn-primary" href="#">Qrupa qoşul (Android)</a>
-      <p class="hint">Chooser çıxacaq — Adi/Business hansını istəyirsənsə seç.</p>
+      <p class="hint">Seçim çıxacaq — Adi/Business hansını istəyirsənsə seç.</p>
     </div>
 
-    <!-- Digər platformalar -->
+    <!-- Digər cihazlar -->
     <div id="otherPanel" class="hidden">
       <a id="btnOTHER" class="btn btn-primary" href="#">Qrupa qoşul</a>
     </div>
@@ -53,12 +53,12 @@
 
 <script>
   /* ==== DƏVƏT KODU ==== */
-const CODE = "GbbXxShpZM27imtEcy0Eos"; YENİ QRUP KODU
+  const CODE = "GbbXxshpZM27imtEcy0EoS";  // SƏNİN YENİ QRUP KODUN
 
   /* ==== Linklər ==== */
-  const CHAT   = `https://chat.whatsapp.com/${CODE}`;        // universal qrup linki
-  const DL_WA  = `whatsapp://accept?code=${CODE}`;            // Adi WhatsApp deep-link
-  const DL_WAB = `whatsapp-business://accept?code=${CODE}`;   // Business deep-link
+  const CHAT   = `https://chat.whatsapp.com/${CODE}`;
+  const DL_WA  = `whatsapp://accept?code=${CODE}`;
+  const DL_WAB = `whatsapp-business://accept?code=${CODE}`;
 
   /* ==== Detektorlar ==== */
   const UA = navigator.userAgent || navigator.vendor || window.opera;
@@ -70,52 +70,47 @@ const CODE = "GbbXxShpZM27imtEcy0Eos"; YENİ QRUP KODU
     catch(_) { location.href = u; }
   }
 
-  /* ==== iOS: yalnız iki düymə, Safari düyməsi yoxdur ==== */
+  /* ==== iOS ==== */
   function setupIOS(){
-    document.getElementById("iosPanel").classList.remove("hidden");
+    iosPanel.classList.remove("hidden");
 
-    // Business
-    document.getElementById("btnIOS_WAB").addEventListener("click", function(e){
+    btnIOS_WAB.onclick = e => {
       e.preventDefault();
       openNew(CHAT);
-      setTimeout(function(){ location.href = DL_WAB; }, 600);
-      setTimeout(function(){ location.href = CHAT;   }, 1500);
-    });
+      setTimeout(()=>location.href = DL_WAB, 600);
+    };
 
-    // Adi WhatsApp
-    document.getElementById("btnIOS_WA").addEventListener("click", function(e){
+    btnIOS_WA.onclick = e => {
       e.preventDefault();
       openNew(CHAT);
-      setTimeout(function(){ location.href = DL_WA; }, 600);
-      setTimeout(function(){ location.href = CHAT;  }, 1500);
-    });
+      setTimeout(()=>location.href = DL_WA, 600);
+    };
   }
 
   /* ==== Android ==== */
   function setupAndroid(){
-    document.getElementById("androidPanel").classList.remove("hidden");
-    document.getElementById("btnAND").addEventListener("click", function(e){
+    androidPanel.classList.remove("hidden");
+    btnAND.onclick = e => {
       e.preventDefault();
-      // chooser üçün paket yazmırıq
       location.href = `intent://chat.whatsapp.com/${CODE}#Intent;scheme=https;end`;
       setTimeout(()=>{ location.href = CHAT; }, 800);
-    });
+    };
   }
 
-  /* ==== Digərləri ==== */
+  /* ==== Digər platformalar ==== */
   function setupOther(){
-    document.getElementById("otherPanel").classList.remove("hidden");
-    document.getElementById("btnOTHER").addEventListener("click", function(e){
+    otherPanel.classList.remove("hidden");
+    btnOTHER.onclick = e => {
       e.preventDefault();
       location.href = CHAT;
-    });
+    };
   }
 
   /* ==== Başlat ==== */
   (function init(){
-    if (isIOS)          setupIOS();
+    if (isIOS)         setupIOS();
     else if (isAndroid) setupAndroid();
-    else                setupOther();
+    else               setupOther();
   })();
 </script>
 </body>
